@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI
 
 on:
   push:
@@ -24,7 +24,6 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        cache: maven
 
     - name: Set execute permissions on build scripts
       run: chmod +x bin/generate-plantuml-diagrams.sh || true

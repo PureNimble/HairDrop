@@ -1,3 +1,5 @@
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&height=120&color=5C5C5C"/>
+
 # Global Artifact Folder
 
 This folder contains all the global artifacts for your project, split by each implementation phase.
@@ -13,3 +15,5 @@ This folder contains all the global artifacts for your project, split by each im
 [Design](03.design/Readme.md)
 
 > In this folder the team shoud collect and keep up-to-date all the artifacts developed during the Sprint related to the software Development Process activities, namely the Engineering Requirements, OO Analysis and Design activities.
+
+<img width=100% src="https://capsule-render.vercel.app/api?type=waving&height=120&color=5C5C5C&section=footer"/>

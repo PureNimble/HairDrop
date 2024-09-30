@@ -1,3 +1,5 @@
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&height=120&color=5C5C5C"/>
+
 # Supplementary Specification (FURPS+)
 
 ## Functionality
@@ -116,3 +118,5 @@ _Specifies a limitation or physical requirement regarding the hardware used to h
 | **_Subcategory_**        | **_Function_**   | **_Description/Example_**                                                                                          |
 |:-------------------------|:-----------------|--------------------------------------------------------------------------------------------------------------------|
 | **Object Serialization** | Data Persistance | •	The application should use object serialization to ensure data persistence between two runs of the application.  |
+
+<img width=100% src="https://capsule-render.vercel.app/api?type=waving&height=120&color=5C5C5C&section=footer"/>

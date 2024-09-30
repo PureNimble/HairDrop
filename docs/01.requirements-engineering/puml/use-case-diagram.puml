@@ -1,4 +1,6 @@
-@startuml
+@startuml use-case-diagram
+
+title Use Case Diagram
 
 left to right direction
 
@@ -86,4 +88,5 @@ S  --> US032
 S  --> US033
 S  --> US034
 S  --> US035
+
 @enduml

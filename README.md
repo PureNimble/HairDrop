@@ -2,7 +2,7 @@
 
 # Project HairDrop
 
-![HairDrop Logo](docs/img/hairdrop-logo.jpg)
+![HairDrop Logo](docs/img/HairDrop-Logo.jpg)
 
 _HairDrop logo_
 
@@ -12,6 +12,6 @@ This project is a service designed to seamlessly connect users with hair salons,
 
 ## 2. Planning and Technical Documentation
 
-[_`Planning and Technical Documentation`_](docs/readme.md)
+[_`Planning and Technical Documentation`_](docs/README.md)
 
 <img width=100% src="https://capsule-render.vercel.app/api?type=waving&height=120&color=5C5C5C&section=footer"/>

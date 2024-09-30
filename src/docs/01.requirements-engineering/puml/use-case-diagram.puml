@@ -1,0 +1,89 @@
+@startuml
+
+left to right direction
+
+actor "Admin" as AD #white;line:red;line.bold;text:black
+actor "Client" as CL #white;line:blue;line.bold;text:black
+actor "HairStylist" as BR #white;line:green;line.bold;text:black
+actor "Salon" as S #white;line:purple;line.bold;text:black
+
+rectangle HairDrop {
+    usecase "Create, edit or delete accounts for clients, hair salons and hair stylists" as US001	
+    usecase "Support and apply authentication and authorization for all its users and functionalities" as US002	
+    usecase "I want to view the statis of my appointment" as US003
+    usecase "Create my account" as US004	
+    usecase "I want to receive updates about my appointment" as US005	
+    usecase "Edit mt account" as US006	
+    usecase "I want to receive reminders about my appointment" as US007	
+    usecase "Delete my account" as US008	
+    usecase "I want to receive notifications when my favorite salons/stylists have promotions" as US009	
+    usecase "Access the activity logs" as US010	
+    usecase "I want to receive notifications when a client cancels or reschedules an appointment" as US011	
+    usecase "Verify my personal information" as US012	
+    usecase "I want to make online payments for services" as US013	
+    usecase "I want to receive a summary of my appointment and payment receipts after services." as US014	
+    usecase "I want to leave reviews for a hair salon and hairstylist" as US015	
+    usecase "Search for nearby hair salons and hair stylists by proximity,reviews, services and prices" as US016	
+    usecase "I want to save my facorite salons and stylists for quickerr sheduling" as US017
+    usecase "Schedule a haircut appointment" as US018
+    usecase "Cancel my haircut appointment" as US019
+    usecase "I want to view my sales history" as US020
+    usecase "Reschedule my haircut appointment" as US021
+    usecase "I want to analyze reviews for service improvements" as US022
+    usecase "View my upcoming appointments" as US023
+    usecase "View the location of my service appointments" as US024
+    usecase "I want to view my earnings from completed services" as US025
+    usecase "Be notified when a change is made to an appointment" as US026
+    usecase "Manage upcoming appointments" as US027
+    usecase "I want to register products and services" as US028
+    usecase "Track the location of my hair stylists" as US029
+    usecase "I want to edit products and services" as US030
+    usecase "I want to delete products and serivces" as US031
+    usecase "I want to assign specific services to stylists" as US032
+    usecase "I want to manage the availability of my stylists (calendar)" as US033
+    usecase "I want to add hair stylists to my salon" as US034
+    usecase "I want to remove hair stylists from my salon" as US035
+}
+
+AD --> US001
+AD --> US002
+CL --> US003
+CL --> US004
+S  --> US004
+BR --> US004
+CL --> US005
+CL --> US006
+S  --> US006
+BR --> US006
+CL --> US007
+CL --> US008
+BR --> US008
+S  --> US008
+CL --> US009
+AD --> US010
+BR --> US011
+CL --> US012
+CL --> US013
+CL --> US014
+CL --> US015
+CL --> US016
+CL --> US017
+CL --> US018
+CL --> US019
+S  --> US020
+CL --> US021
+S  --> US022
+BR --> US023
+BR --> US024
+BR --> US025
+BR --> US026
+S  --> US027
+S  --> US028
+S  --> US029
+S  --> US030
+S  --> US031
+S  --> US032
+S  --> US033
+S  --> US034
+S  --> US035
+@enduml

@@ -1,5 +1,7 @@
 @startuml use-case-diagram
 
+title Use Case Diagram
+
 left to right direction
 
 actor "Admin" as AD #white;line:red;line.bold;text:black

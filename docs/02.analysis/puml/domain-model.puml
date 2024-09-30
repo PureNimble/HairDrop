@@ -1,0 +1,180 @@
+@startuml domain-model
+
+title Domain Model
+
+hide empty members
+'skinparam Linetype ortho
+
+skinparam class {
+    BackgroundColor<<valueObject>> #D6EAF8
+    BackgroundColor<<root>> #FDEBD0
+    BackgroundColor<<service>> #D1F2EB
+    BackgroundColor #FEF9E7
+    ArrowColor Black
+}
+
+skinparam package {
+    BackgroundColor #EBF5FB
+}
+
+' User Aggregate
+package "<<aggregate>> User" {
+    entity User <<entity>> <<root>> {}
+
+    class Password <<valueObject>> <<(V, #FF8B40)>> {}
+    class Role <<valueObject>> <<(V, #FF8B40)>> {}
+    class IsActive <<valueObject>> <<(V, #FF8B40)>> {}
+    class Authentication <<service>> <<(S, #85C1E9)>> {}
+    class Token <<valueObject>> <<(V, #FF8B40)>> {}
+    class createdOn <<valueObject>> <<(V, #FF8B40)>> {}
+    class PasswordPolicy <<service>> <<(S, #85C1E9)>> {}
+    class PasswordEncoder <<service>> <<(S, #85C1E9)>> {}
+}
+
+' Client Aggregate
+package "<<aggregate>> Client" {
+    entity Client <<entity>> <<root>> {}
+}
+
+' HairSalon Aggregate
+package "<<aggregate>> HairSalon" {
+    entity HairSalon <<entity>> <<root>> {}
+
+    class CompanyName <<valueObject>> <<(V, #FF8B40)>> {}
+    class CompanyCode <<valueObject>> <<(V, #FF8B40)>> {}
+}
+
+' HairStylist Aggregate
+package "<<aggregate>> HairStylist" {
+    entity HairStylist <<entity>> <<root>> {}
+}
+
+' Service Aggregate
+package "<<aggregate>> Service" {
+    entity Service <<entity>> <<root>> {}
+
+    class ServiceName <<valueObject>> <<(V, #FF8B40)>> {}
+    class Price <<valueObject>> <<(V, #FF8B40)>> {}
+}
+
+' Appointment Aggregate
+package "<<aggregate>> Appointment" {
+    entity Appointment <<entity>> <<root>> {}
+
+    class AppointmentDate <<valueObject>> <<(V, #FF8B40)>> {}
+    class AppointmentTime <<valueObject>> <<(V, #FF8B40)>> {}
+}
+
+' Review Aggregate
+package "<<aggregate>> Review" {
+    entity Review <<entity>> <<root>> {}
+
+    class Rate <<valueObject>> <<(V, #FF8B40)>> {}
+    class Comment <<valueObject>> <<(V, #FF8B40)>> {}
+}
+
+' Billing Aggregate
+package "<<aggregate>> Billing" {
+    entity Billing <<entity>> <<root>> {}
+
+    class CardNumber <<valueObject>> <<(V, #FF8B40)>> {}
+    class CardExpirationDate <<valueObject>> <<(V, #FF8B40)>> {}
+    class CardCVC <<valueObject>> <<(V, #FF8B40)>> {}
+}
+
+' Schedule Aggregate
+package "<<aggregate>> Schedule" {
+    entity Schedule <<entity>> <<root>> {}
+
+    class ScheduleDate <<valueObject>> <<(V, #FF8B40)>> {}
+    class ScheduleInitialTime <<valueObject>> <<(V, #FF8B40)>> {}
+    class ScheduleFinalTime <<valueObject>> <<(V, #FF8B40)>> {}
+}
+
+class FullName <<valueObject>> <<(V, #FF8B40)>> {}
+class Address <<valueObject>> <<(V, #FF8B40)>> {}
+class PhoneNumber <<valueObject>> <<(V, #FF8B40)>> {}
+class Email <<valueObject>> <<(V, #FF8B40)>> {}
+class Photo <<valueObject>> <<(V, #FF8B40)>> {}
+
+' User relationships
+User "1" --> "1" Email : has
+User "1" --> "1" Password : has
+User "1" --> "1" Role : has
+User "1" --> "1" IsActive : can be
+User "1" --> "1" Authentication : authenticated by
+User "1" --> "1" Address : has
+
+' Client relationships
+Client "1" --|> "1" User : is a
+Client "1" --> "1" FullName : has
+Client "1" --> "1" PhoneNumber : has
+Client "1" --> "1" Email : has
+Client "1" --> "1" Address : has
+Client "1" --> "1" Billing : has
+
+' HairSalon relationships
+HairSalon "1" --|> "1" User : is a
+HairSalon "1" --> "1" CompanyName : has
+HairSalon "1" --> "1" CompanyCode : has
+HairSalon "1" --> "1" Address : has
+HairSalon "1" --> "1" PhoneNumber : has
+HairSalon "1" --> "1" Email : has
+HairSalon "1" --> "*" Service : has
+HairSalon "1" --> "*" Review : has
+HairSalon "1" --> "*" HairStylist : has
+HairSalon "1" --> "*" Appointment : manages
+HairSalon "1" --> "*" Schedule : manages
+
+' HairStylist relationships
+HairStylist "1" --|> "1" User : is a
+HairStylist "1" --> "1" FullName : has
+HairStylist "1" --> "1" PhoneNumber : has
+HairStylist "1" --> "1" Email : has
+HairStylist "1" --> "*" Service : provides
+HairStylist "1" --> "*" Appointment : has
+HairStylist "1" --> "*" Review : has
+HairStylist "1" --> "*" Schedule : has
+
+' Authentication relationships
+Authentication "1" ..> "1" Email : authenticated by
+Authentication "1" ..> "1" Password : authenticated by
+Authentication "1" ..> "1" Token : generates
+Authentication "1" ..> "1" createdOn : generates
+Authentication "1" ..> "1" PasswordPolicy : applies
+Authentication "1" ..> "1" PasswordEncoder : uses
+
+' Password relationships
+Password "1" ..> "1" PasswordPolicy : applies
+Password "1" ..> "1" PasswordEncoder : uses
+
+' Card relationships
+Billing "1" --> "1" FullName : has
+Billing "1" --> "1" CardNumber : has
+Billing "1" --> "1" CardExpirationDate : has
+Billing "1" --> "1" CardCVC : has
+Billing "1" --> "1" Address : has
+Billing "1" --> "1" PhoneNumber : has
+Billing "1" --> "1" Email : has
+
+' Service relationships
+Service "1" --> "1" ServiceName : has
+Service "1" --> "1" Photo : has
+Service "1" --> "1" Price : has
+Service "1" --> "*" Review : has
+
+' Appointment relationships
+Appointment "1" --> "1" AppointmentDate : has
+Appointment "1" --> "1" AppointmentTime : has
+
+' Review relationships
+Review "1" --> "1" Rate : has
+Review "1" --> "1" Photo : has
+Review "1" --> "1" Comment : has
+
+' Schedule relationships
+Schedule "1" --> "1" ScheduleDate : has
+Schedule "1" --> "1" ScheduleInitialTime : has
+Schedule "1" --> "1" ScheduleFinalTime : has
+
+@enduml

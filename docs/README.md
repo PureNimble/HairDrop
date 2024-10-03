@@ -10,9 +10,9 @@ This folder contains all the global artifacts for your project, split by each im
 
 [_`Use Case Diagram`_](01.requirements-engineering/use-case-diagram.md)
 
-[_`Analysis`_](02.analysis/Readme.md)
+[_`Analysis`_](02.analysis/README.md)
 
-[_`Design`_](03.design/Readme.md)
+[_`Design`_](03.design/README.md)
 
 > In this folder the team shoud collect and keep up-to-date all the artifacts developed during the Sprint related to the software Development Process activities, namely the Engineering Requirements, OO Analysis and Design activities.
 

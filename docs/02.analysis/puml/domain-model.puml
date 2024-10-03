@@ -91,7 +91,8 @@ package "<<aggregate>> Schedule" {
     class ScheduleFinalTime <<valueObject>> <<(V, #FF8B40)>> {}
 }
 
-class FullName <<valueObject>> <<(V, #FF8B40)>> {}
+class FirstName <<valueObject>> <<(V, #FF8B40)>> {}
+class LastName <<valueObject>> <<(V, #FF8B40)>> {}
 class Address <<valueObject>> <<(V, #FF8B40)>> {}
 class PhoneNumber <<valueObject>> <<(V, #FF8B40)>> {}
 class Email <<valueObject>> <<(V, #FF8B40)>> {}
@@ -107,11 +108,15 @@ User "1" --> "1" Address : has
 
 ' Client relationships
 Client "1" --|> "1" User : is a
-Client "1" --> "1" FullName : has
+Client "1" --> "1" FirstName : has
+Client "1" --> "1" LastName : has
 Client "1" --> "1" PhoneNumber : has
 Client "1" --> "1" Email : has
 Client "1" --> "1" Address : has
 Client "1" --> "1" Billing : has
+Client "1" --> "*" Appointment : has
+Client "1" --> "1" Photo : has
+Client "1" --> "*" Review : has
 
 ' HairSalon relationships
 HairSalon "1" --|> "1" User : is a
@@ -125,16 +130,19 @@ HairSalon "1" --> "*" Review : has
 HairSalon "1" --> "*" HairStylist : has
 HairSalon "1" --> "*" Appointment : manages
 HairSalon "1" --> "*" Schedule : manages
+HairSalon "1" --> "*" Photo : has
 
 ' HairStylist relationships
 HairStylist "1" --|> "1" User : is a
-HairStylist "1" --> "1" FullName : has
+HairStylist "1" --> "1" FirstName : has
+HairStylist "1" --> "1" LastName : has
 HairStylist "1" --> "1" PhoneNumber : has
 HairStylist "1" --> "1" Email : has
 HairStylist "1" --> "*" Service : provides
 HairStylist "1" --> "*" Appointment : has
 HairStylist "1" --> "*" Review : has
 HairStylist "1" --> "*" Schedule : has
+HairStylist "1" --> "1" Photo : has
 
 ' Authentication relationships
 Authentication "1" ..> "1" Email : authenticated by
@@ -149,7 +157,8 @@ Password "1" ..> "1" PasswordPolicy : applies
 Password "1" ..> "1" PasswordEncoder : uses
 
 ' Card relationships
-Billing "1" --> "1" FullName : has
+Billing "1" --> "1" FirstName : has
+Billing "1" --> "1" LastName : has
 Billing "1" --> "1" CardNumber : has
 Billing "1" --> "1" CardExpirationDate : has
 Billing "1" --> "1" CardCVC : has

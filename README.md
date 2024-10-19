@@ -26,6 +26,8 @@ This project is a service designed to seamlessly connect users with hair salons,
   
   [<img src='https://icon.icepanel.io/AWS/svg/Database/DynamoDB.svg' alt='dynamoDB' height='40'>](https://aws.amazon.com/dynamodb/)
   [<img src='https://icon.icepanel.io/AWS/svg/Compute/Lambda.svg' alt='lambda' height='40'>](https://aws.amazon.com/lambda/)
+  [<img src='https://www.svgrepo.com/show/374056/rust.svg' alt='rust' height='40'>](https://www.rust-lang.org/)
+
 
 
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&height=120&color=5C5C5C&section=footer"/>

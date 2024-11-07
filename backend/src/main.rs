@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::sync::Mutex;
 
-const LOCALHOST: &str = "localhost";
+const HOST: &str = "0.0.0.0";
 const PORT: u16 = 2228;
 
 #[derive(Serialize, Deserialize)]
@@ -190,7 +190,7 @@ async fn main() -> std::io::Result<()> {
         ]),
     });
 
-    println!("Server running at http://{}:{}", LOCALHOST, PORT);
+    println!("Server running at http://{}:{}", HOST, PORT);
 
     HttpServer::new(move || {
         App::new()
@@ -201,7 +201,7 @@ async fn main() -> std::io::Result<()> {
             .service(update_ticket)
             .service(delete_ticket)
     })
-    .bind((LOCALHOST, PORT))?
+    .bind((HOST, PORT))?
     .run()
     .await
 }

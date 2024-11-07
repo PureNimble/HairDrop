@@ -11,8 +11,8 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::sync::Mutex;
 
-const LOCALHOST: &str = "127.0.0.1";
-const PORT: u16 = 2226;
+const LOCALHOST: &str = "localhost";
+const PORT: u16 = 2228;
 
 #[derive(Serialize, Deserialize)]
 struct Ticket {

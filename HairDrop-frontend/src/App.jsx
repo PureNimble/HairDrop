@@ -1,17 +1,17 @@
-import reactLogo from './assets/react.svg'
-import { LoginForm } from './components'
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { PageNotFound, Login, Register } from './pages';
 
 function App() {
-
-  return (
-    <>
-      <div>
-        <section className="flex justify-center items-center min-h-screen p-4">
-          <LoginForm />
-        </section>
-      </div>
-    </>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<PageNotFound />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
-export default App
+export default App;

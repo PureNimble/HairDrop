@@ -12,7 +12,7 @@ use std::fmt::Display;
 use std::sync::Mutex;
 
 const LOCALHOST: &str = "127.0.0.1";
-const PORT: u16 = 8000;
+const PORT: u16 = 2226;
 
 #[derive(Serialize, Deserialize)]
 struct Ticket {

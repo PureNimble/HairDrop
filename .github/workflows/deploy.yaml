@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: HairDrop-frontend
+        working-directory: frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,17 +40,17 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'  # Enable npm caching
-          cache-dependency-path: ./HairDrop-frontend/package-lock.json  # Set the correct path for the lock file
+          cache-dependency-path: ./frontend/package-lock.json  # Set the correct path for the lock file
 
       # Install dependencies
       - name: Install dependencies
         run: npm ci
-        working-directory: ./HairDrop-frontend
+        working-directory: ./frontend
 
       # Build the project
       - name: Build
         run: npm run build
-        working-directory: ./HairDrop-frontend
+        working-directory: ./frontend
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -58,13 +58,13 @@ jobs:
       # Move 404 page to dist
       - name: Move 404 page to dist
         run: mv 404.html dist
-        working-directory: ./HairDrop-frontend
+        working-directory: ./frontend
 
       # Upload the dist folder to GitHub Pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './HairDrop-frontend/dist'
+          path: './frontend/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment

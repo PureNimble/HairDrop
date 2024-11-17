@@ -34,8 +34,8 @@ pub async fn register_user(
 
     let new_user = NewUser {
         username: form.username.clone(),
-        password_hash: hashed_password, // Use the renamed variable here
         email: form.email.clone(),
+        password_hash: hashed_password, // Use the renamed variable here
     };
 
     diesel::insert_into(users)
@@ -45,7 +45,6 @@ pub async fn register_user(
 
     HttpResponse::Ok().json("User registered successfully")
 }
-
 pub async fn login_user(
     pool: web::Data<r2d2::Pool<ConnectionManager<MysqlConnection>>>,
     form: web::Json<LoginData>,
@@ -55,22 +54,21 @@ pub async fn login_user(
         Err(_) => return HttpResponse::InternalServerError().body("Failed to get DB connection"),
     };
 
-    // Get user password hash
+    // Find the user by username
+
     let result = users
         .filter(username.eq(&form.username))
-        .select(password_hash)
-        .first::<String>(&mut conn);
+        .first::<User>(&mut conn);
 
     match result {
-        Ok(password) => {
+        Ok(user) => {
             // Verify the password
-            if verify(&form.password, &password).unwrap_or(false) {
+            if verify(&form.password, &user.password_hash).unwrap_or(false) {
                 HttpResponse::Ok().json("Login successful")
             } else {
                 HttpResponse::Unauthorized().body("Invalid password")
             }
         }
-        Err(diesel::result::Error::NotFound) => HttpResponse::NotFound().body("User not found"),
-        Err(_) => HttpResponse::InternalServerError().body("Database error"),
+        Err(_) => HttpResponse::NotFound().body("User not found"),
     }
 }

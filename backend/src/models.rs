@@ -1,14 +1,15 @@
 use crate::schema::users;
-use chrono::NaiveDateTime;
+
 use diesel::prelude::*;
 
-#[derive(Selectable)]
+#[derive(Debug, Queryable, Selectable)]
+#[diesel(table_name = users)]
 pub struct User {
     pub id: i32,
-    pub username: String,
-    pub password_hash: String,
-    pub email: String,
-    pub created_at: NaiveDateTime,
+    pub username: String, // Matches Text
+    pub password_hash: String, // Matches Text
+    pub email: String, // Matches Text
+    pub created_at: chrono::NaiveDateTime, // Matches Timestamp
 }
 
 #[derive(Insertable)]

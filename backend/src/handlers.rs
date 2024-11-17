@@ -10,8 +10,8 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct RegisterData {
     pub username: String,
-    pub email: String,
     pub password: String,
+    pub email: String,
 }
 
 #[derive(Deserialize)]
@@ -34,8 +34,8 @@ pub async fn register_user(
 
     let new_user = NewUser {
         username: form.username.clone(),
-        email: form.email.clone(),
         password_hash: hashed_password, // Use the renamed variable here
+        email: form.email.clone(),
     };
 
     diesel::insert_into(users)

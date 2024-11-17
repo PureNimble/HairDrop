@@ -23,6 +23,10 @@ async fn main() -> std::io::Result<()> {
     let pool = Pool::builder()
         .build(manager)
         .expect("Failed to create pool.");
+    println!(
+        "Server started at http://{}:{}/",
+        server_config.host, server_config.port
+    );
 
     // Start the HTTP server
     HttpServer::new(move || {

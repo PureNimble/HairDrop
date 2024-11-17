@@ -5,7 +5,6 @@ use actix_web::{web, HttpResponse, Responder};
 use bcrypt::{hash, verify};
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
-use diesel::sql_types::{Integer, Timestamp, VarChar};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -46,6 +45,7 @@ pub async fn register_user(
 
     HttpResponse::Ok().json("User registered successfully")
 }
+
 pub async fn login_user(
     pool: web::Data<r2d2::Pool<ConnectionManager<MysqlConnection>>>,
     form: web::Json<LoginData>,
@@ -55,21 +55,22 @@ pub async fn login_user(
         Err(_) => return HttpResponse::InternalServerError().body("Failed to get DB connection"),
     };
 
-    // Find the user by username
-
+    // Get user password hash
     let result = users
         .filter(username.eq(&form.username))
-        .first::<User>(&mut conn);
+        .select(password_hash)
+        .first::<String>(&mut conn);
 
     match result {
-        Ok(user) => {
+        Ok(password) => {
             // Verify the password
-            if verify(&form.password, &user.password_hash).unwrap_or(false) {
+            if verify(&form.password, &password).unwrap_or(false) {
                 HttpResponse::Ok().json("Login successful")
             } else {
                 HttpResponse::Unauthorized().body("Invalid password")
             }
         }
-        Err(_) => HttpResponse::NotFound().body("User not found"),
+        Err(diesel::result::Error::NotFound) => HttpResponse::NotFound().body("User not found"),
+        Err(_) => HttpResponse::InternalServerError().body("Database error"),
     }
 }

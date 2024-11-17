@@ -1065,9 +1065,9 @@ dependencies = [
 
 [[package]]
 name = "mysqlclient-sys"
-version = "0.4.1"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "478e2040dbc35c73927b77a2be91a496de19deab376a6982ed61e89592434619"
+checksum = "f61b381528ba293005c42a409dd73d034508e273bf90481f17ec2e964a6e969b"
 dependencies = [
  "pkg-config",
  "vcpkg",

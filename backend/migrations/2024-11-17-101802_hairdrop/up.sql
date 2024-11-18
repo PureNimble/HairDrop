@@ -6,5 +6,3 @@ CREATE TABLE users (
     email TEXT UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO users (username, password_hash, email) VALUES ('admin', 'password', 'admin@gmail.com');

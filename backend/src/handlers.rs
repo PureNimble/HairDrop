@@ -1,11 +1,12 @@
 use crate::models::{NewUser, User};
-use crate::r2d2;
 use crate::schema::users::dsl::*;
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use bcrypt::{hash, verify};
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 use serde::Deserialize;
+
+use crate::jwt::{create_jwt, verify_jwt};
 
 #[derive(Deserialize)]
 pub struct RegisterData {
@@ -46,7 +47,7 @@ pub async fn register_user(
     HttpResponse::Ok().json("User registered successfully")
 }
 pub async fn login_user(
-    pool: web::Data<r2d2::Pool<ConnectionManager<MysqlConnection>>>,
+    pool: web::Data<Pool<ConnectionManager<MysqlConnection>>>,
     form: web::Json<LoginData>,
 ) -> impl Responder {
     let mut conn = match pool.get() {
@@ -54,21 +55,45 @@ pub async fn login_user(
         Err(_) => return HttpResponse::InternalServerError().body("Failed to get DB connection"),
     };
 
-    // Find the user by username
-
     let result = users
         .filter(username.eq(&form.username))
         .first::<User>(&mut conn);
 
     match result {
         Ok(user) => {
-            // Verify the password
             if verify(&form.password, &user.password_hash).unwrap_or(false) {
-                HttpResponse::Ok().json("Login successful")
+                // Generate JWT token
+                let token = create_jwt(&user.username);
+                HttpResponse::Ok().json(token)
             } else {
                 HttpResponse::Unauthorized().body("Invalid password")
             }
         }
         Err(_) => HttpResponse::NotFound().body("User not found"),
     }
+}
+
+pub async fn get_users(
+    pool: web::Data<Pool<ConnectionManager<MysqlConnection>>>,
+    req: HttpRequest,
+) -> impl Responder {
+    let auth_header = req
+        .headers()
+        .get("Authorization")
+        .and_then(|header| header.to_str().ok());
+
+    if let Some(auth_header) = auth_header {
+        if let Some(token) = auth_header.strip_prefix("Bearer ") {
+            match verify_jwt(token) {
+                Ok(_claims) => {
+                    // Proceed to fetch and return users if token is valid
+                    let mut conn = pool.get().expect("Failed to get DB connection");
+                    let users_list = users.load::<User>(&mut conn).expect("Error loading users");
+                    return HttpResponse::Ok().json(users_list);
+                }
+                Err(_) => return HttpResponse::Unauthorized().body("Invalid or expired token"),
+            }
+        }
+    }
+    HttpResponse::Unauthorized().body("Authorization header missing or malformed")
 }

@@ -2,6 +2,7 @@ extern crate diesel;
 
 mod config;
 mod handlers;
+mod jwt;
 mod models;
 mod schema;
 
@@ -34,6 +35,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .route("/register", web::post().to(handlers::register_user))
             .route("/login", web::post().to(handlers::login_user))
+            .route("/users", web::get().to(handlers::get_users))
     })
     .bind((
         server_config.host.as_str(),

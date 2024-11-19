@@ -3,7 +3,7 @@ use crate::schema::user;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Queryable, Selectable, Deserialize, Serialize)]
+#[derive(Debug, Queryable, QueryableByName, Selectable, Deserialize, Serialize)]
 #[diesel(table_name = user)]
 pub struct User {
     pub id: i32,

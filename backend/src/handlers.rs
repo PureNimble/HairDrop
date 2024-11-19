@@ -5,7 +5,7 @@ use bcrypt::{hash, verify};
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 use serde::Deserialize;
-
+use std::collections::HashMap;
 use crate::jwt::{create_jwt, verify_jwt};
 
 #[derive(Deserialize)]
@@ -74,8 +74,9 @@ pub async fn login_user(
     }
 }
 
-pub async fn get_user(
+pub async fn vulnerable_search(
     pool: web::Data<Pool<ConnectionManager<MysqlConnection>>>,
+    query: web::Query<HashMap<String, String>>,
     req: HttpRequest,
 ) -> impl Responder {
     let auth_header = req
@@ -87,14 +88,28 @@ pub async fn get_user(
         if let Some(token) = auth_header.strip_prefix("Bearer ") {
             match verify_jwt(token) {
                 Ok(_claims) => {
-                    // Proceed to fetch and return user if token is valid
-                    let mut conn = pool.get().expect("Failed to get DB connection");
-                    let user_list = user.load::<User>(&mut conn).expect("Error loading user");
-                    return HttpResponse::Ok().json(user_list);
+                    let mut conn = match pool.get() {
+                        Ok(conn) => conn,
+                        Err(_) => {
+                            return HttpResponse::InternalServerError()
+                                .body("Failed to get DB connection");
+                        }
+                    };
+
+                    let search_term = query.get("q").unwrap_or(&"".to_string()).to_string();
+                    let sql = format!("SELECT * FROM user WHERE email LIKE '%{}%'", search_term);
+
+                    let result = diesel::sql_query(sql).load::<User>(&mut conn);
+
+                    return match result {
+                        Ok(users) => HttpResponse::Ok().json(users),
+                        Err(_) => HttpResponse::InternalServerError().body("Failed to perform search"),
+                    };
                 }
-                Err(_) => return HttpResponse::Unauthorized().body("Invalid or expired token"),
+                Err(_) => return HttpResponse::Unauthorized().body("Invalid token"),
             }
         }
     }
-    HttpResponse::Unauthorized().body("Authorization header missing or malformed")
+
+    HttpResponse::Unauthorized().body("Authorization header missing or invalid")
 }

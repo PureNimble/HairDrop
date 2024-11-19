@@ -1,0 +1,13 @@
+[Unit]
+Description=Rust server
+After=network.target
+
+[Service]
+ExecStart=/root/HairDrop/backend/target/release/rust-backend
+Restart=always
+User=root
+WorkingDirectory=/root/HairDrop/backend
+Environment=RUST_LOG=info
+
+[Install]
+WantedBy=multi-user.target

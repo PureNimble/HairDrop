@@ -18,7 +18,7 @@ function LoginForm() {
         try {
             await login(email, password);
             alert('Login successful!');
-            navigate('/Home');
+            navigate('/home');
         } catch (err) {
             setError(err.message);
         } finally {

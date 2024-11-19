@@ -12,8 +12,7 @@ git pull
 if [ $? -eq 0 ]; then
     echo "Changes detected, building the project..."
     
-    # Build the project
-    cargo CARGO_INCREMENTAL=1 cargo build --release
+    ./root/HairDrop/backend/scripts/build.sh
     
     # Set the appropriate permissions
     chmod +x /root/HairDrop/target/release/*

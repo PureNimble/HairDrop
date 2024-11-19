@@ -11,7 +11,7 @@ function Home() {
             <div className="flex justify-end p-4">
                 <LogoutButton />
             </div>
-            <section className="container mx-auto px-16 py-8">
+            <section className="container mx-auto px-12 py-8">
                 <div className="flex justify-center mt-16">
                     <div className="w-full max-w-4xl">
                         <SearchInput
@@ -22,7 +22,7 @@ function Home() {
                     </div>
                 </div>
                 <div className="mt-12">
-                    <div className="w-full max-w-6xl mx-auto">
+                    <div className="w-full mx-auto">
                         {loading && <p>Loading...</p>}
                         {error && <p className="text-red-500">{error}</p>}
                         <TableDB data={searchResults} />

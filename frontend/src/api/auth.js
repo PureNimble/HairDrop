@@ -3,8 +3,7 @@ import { apiClient } from './apiService';
 export const login = async (email, password) => {
     try {
         const response = await apiClient.post('/login', { email, password });
-        const { token } = response.data;
-
+        const token  = response.data;
         localStorage.setItem('token', token);
         return token;
     } catch (error) {

@@ -1,22 +1,24 @@
-use crate::schema::users;
+use crate::schema::user;
 
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Queryable, Selectable, Deserialize, Serialize)]
-#[diesel(table_name = users)]
+#[diesel(table_name = user)]
 pub struct User {
     pub id: i32,
-    pub username: String,                  // Matches Text
-    pub password_hash: String,             // Matches Text
-    pub email: String,                     // Matches Text
-    pub created_at: chrono::NaiveDateTime, // Matches Timestamp
+    pub email: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub password_hash: String,
+    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Insertable)]
-#[diesel(table_name = users)]
+#[diesel(table_name = user)]
 pub struct NewUser {
-    pub username: String,
     pub email: String,
+    pub first_name: String,
+    pub last_name: String,
     pub password_hash: String,
 }

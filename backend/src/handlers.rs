@@ -1,5 +1,5 @@
 use crate::models::{NewUser, User};
-use crate::schema::users::dsl::*;
+use crate::schema::user::dsl::*;
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use bcrypt::{hash, verify};
 use diesel::prelude::*;
@@ -10,14 +10,15 @@ use crate::jwt::{create_jwt, verify_jwt};
 
 #[derive(Deserialize)]
 pub struct RegisterData {
-    pub username: String,
-    pub password: String,
     pub email: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub password: String,
 }
 
 #[derive(Deserialize)]
 pub struct LoginData {
-    pub username: String,
+    pub email: String,
     pub password: String,
 }
 
@@ -34,18 +35,20 @@ pub async fn register_user(
     };
 
     let new_user = NewUser {
-        username: form.username.clone(),
         email: form.email.clone(),
-        password_hash: hashed_password, // Use the renamed variable here
+        first_name: form.first_name.clone(),
+        last_name: form.last_name.clone(),
+        password_hash: hashed_password,
     };
 
-    diesel::insert_into(users)
+    diesel::insert_into(user)
         .values(&new_user)
         .execute(&mut conn)
         .expect("Error inserting new user");
 
     HttpResponse::Ok().json("User registered successfully")
 }
+
 pub async fn login_user(
     pool: web::Data<Pool<ConnectionManager<MysqlConnection>>>,
     form: web::Json<LoginData>,
@@ -55,15 +58,13 @@ pub async fn login_user(
         Err(_) => return HttpResponse::InternalServerError().body("Failed to get DB connection"),
     };
 
-    let result = users
-        .filter(username.eq(&form.username))
-        .first::<User>(&mut conn);
+    let result = user.filter(email.eq(&form.email)).first::<User>(&mut conn);
 
     match result {
-        Ok(user) => {
-            if verify(&form.password, &user.password_hash).unwrap_or(false) {
+        Ok(other_user) => {
+            if verify(&form.password, &other_user.password_hash).unwrap_or(false) {
                 // Generate JWT token
-                let token = create_jwt(&user.username);
+                let token = create_jwt(&other_user.email);
                 HttpResponse::Ok().json(token)
             } else {
                 HttpResponse::Unauthorized().body("Invalid password")
@@ -73,7 +74,7 @@ pub async fn login_user(
     }
 }
 
-pub async fn get_users(
+pub async fn get_user(
     pool: web::Data<Pool<ConnectionManager<MysqlConnection>>>,
     req: HttpRequest,
 ) -> impl Responder {
@@ -86,10 +87,10 @@ pub async fn get_users(
         if let Some(token) = auth_header.strip_prefix("Bearer ") {
             match verify_jwt(token) {
                 Ok(_claims) => {
-                    // Proceed to fetch and return users if token is valid
+                    // Proceed to fetch and return user if token is valid
                     let mut conn = pool.get().expect("Failed to get DB connection");
-                    let users_list = users.load::<User>(&mut conn).expect("Error loading users");
-                    return HttpResponse::Ok().json(users_list);
+                    let user_list = user.load::<User>(&mut conn).expect("Error loading user");
+                    return HttpResponse::Ok().json(user_list);
                 }
                 Err(_) => return HttpResponse::Unauthorized().body("Invalid or expired token"),
             }

@@ -1,11 +1,15 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    users (id) {
+    user (id) {
         id -> Integer,
-        username -> Text,
+        #[max_length = 255]
+        email -> Varchar,
+        #[max_length = 255]
+        first_name -> Varchar,
+        #[max_length = 255]
+        last_name -> Varchar,
         password_hash -> Text,
-        email -> Text,
         created_at -> Timestamp,
     }
 }

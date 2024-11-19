@@ -45,7 +45,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .route("/register", web::post().to(handlers::register_user))
             .route("/login", web::post().to(handlers::login_user))
-            .route("/users", web::get().to(handlers::get_users))
+            .route("/users", web::get().to(handlers::get_user))
     })
     .bind((
         server_config.host.as_str(),

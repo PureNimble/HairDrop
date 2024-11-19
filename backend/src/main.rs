@@ -6,6 +6,7 @@ mod jwt;
 mod models;
 mod schema;
 
+use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use config::ServerConfig;
 use diesel::mysql::MysqlConnection;
@@ -31,7 +32,16 @@ async fn main() -> std::io::Result<()> {
 
     // Start the HTTP server
     HttpServer::new(move || {
+        let cors = Cors::default()
+            //.allow_any_origin()
+            .allowed_origin("http://hairdrop.me")
+            .supports_credentials()
+            .allow_any_method()
+            .allow_any_header()
+            .max_age(3600);
+
         App::new()
+            .wrap(cors) // Attach CORS middleware
             .app_data(web::Data::new(pool.clone()))
             .route("/register", web::post().to(handlers::register_user))
             .route("/login", web::post().to(handlers::login_user))

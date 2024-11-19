@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiClient } from '../api/apiService';
+import { login } from '../api/auth';
 
 function LoginForm() {
     const navigate = useNavigate();
 
-    const [email, setemail] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -16,15 +16,11 @@ function LoginForm() {
         setError('');
 
         try {
-            const response = await apiClient.post('/login', { email, password });
-            const { token } = response.data;
-
-            localStorage.setItem('authToken', token);
+            await login(email, password);
             alert('Login successful!');
             navigate('/Home');
         } catch (err) {
-            console.error('Login failed:', err);
-            setError('Invalid email or password.');
+            setError(err.message);
         } finally {
             setIsLoading(false);
         }
@@ -55,7 +51,7 @@ function LoginForm() {
                     name="email"
                     type="text"
                     value={email}
-                    onChange={(e) => setemail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full h-10 pl-2 pr-2 border border-gray-200 rounded-md shadow-sm outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-gray-800"
                     id="email_field"
                     required

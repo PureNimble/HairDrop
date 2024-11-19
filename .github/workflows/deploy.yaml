@@ -49,9 +49,9 @@ jobs:
 
       # Build the project
       - name: Build
-        run: |
-          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
-          npm run build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         working-directory: ./frontend
 
       - name: Setup Pages

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CiSearch } from "react-icons/ci";
 import { apiClient } from '../api/apiService';
 
-const SearchInput = ({ onResults, onError, onLoading }) => {
+const SearchInput = ({ onResults, onError }) => {
     const [query, setQuery] = useState('');
 
     const handleInputChange = (e) => {
@@ -12,19 +12,14 @@ const SearchInput = ({ onResults, onError, onLoading }) => {
     const handleSearch = async () => {
         if (!query.trim()) return;
 
-        if (onLoading) onLoading(true);
 
         try {
-            const response = await apiClient.post('/search', {
-                params: { q: query },
-            });
+            const response = await apiClient.post('/search', query);
 
             if (onResults) onResults(response.data);
         } catch (err) {
             console.error('Search failed:', err);
             if (onError) onError('Failed to fetch search results. Please try again.');
-        } finally {
-            if (onLoading) onLoading(false);
         }
     };
 

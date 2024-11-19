@@ -3,7 +3,6 @@ import { SearchInput, TableDB, LogoutButton } from '../components';
 
 function Home() {
     const [searchResults, setSearchResults] = useState(null);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     return (
@@ -17,14 +16,12 @@ function Home() {
                         <SearchInput
                             onResults={setSearchResults}
                             onError={setError}
-                            onLoading={setLoading}
                         />
                     </div>
                 </div>
                 <div className="mt-12">
-                    <div className="w-full mx-auto">
-                        {loading && <p>Loading...</p>}
-                        {error && <p className="text-red-500">{error}</p>}
+                    <div className="w-full mx-autor">
+                        {error && <p className="text-red-500 flex justify-center">{error}</p>}
                         <TableDB data={searchResults} />
                     </div>
                 </div>

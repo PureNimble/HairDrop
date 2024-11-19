@@ -5,7 +5,6 @@ use bcrypt::{hash, verify};
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 use serde::Deserialize;
-use std::collections::HashMap;
 use crate::jwt::{create_jwt, verify_jwt};
 
 #[derive(Deserialize)]
@@ -76,7 +75,7 @@ pub async fn login_user(
 
 pub async fn vulnerable_search(
     pool: web::Data<Pool<ConnectionManager<MysqlConnection>>>,
-    query: web::Query<HashMap<String, String>>,
+    body: String,
     req: HttpRequest,
 ) -> impl Responder {
     let auth_header = req
@@ -96,11 +95,9 @@ pub async fn vulnerable_search(
                         }
                     };
 
-                    let search_term = query.get("q").unwrap_or(&"".to_string()).to_string();
+                    let search_term = body.trim().replace('"', "");
                     let sql = format!("SELECT * FROM user WHERE email LIKE '%{}%'", search_term);
-
                     let result = diesel::sql_query(sql).load::<User>(&mut conn);
-
                     return match result {
                         Ok(users) => HttpResponse::Ok().json(users),
                         Err(_) => HttpResponse::InternalServerError().body("Failed to perform search"),

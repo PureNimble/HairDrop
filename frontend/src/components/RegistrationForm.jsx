@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/apiService';
+import { validatePassword, passwordRequirements } from '../utils/PasswordPolicy';
 
 function RegistrationForm() {
     const navigate = useNavigate();
@@ -13,12 +14,20 @@ function RegistrationForm() {
         confirmPassword: '',
     });
 
+    const [passwordErrors, setPasswordErrors] = useState([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [hasPasswordBlurred, setHasPasswordBlurred] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handlePasswordBlur = () => {
+        const failedRules = validatePassword(formData.password);
+        setPasswordErrors(failedRules);
+        setHasPasswordBlurred(true);
     };
 
     const handleSubmit = async (e) => {
@@ -34,6 +43,14 @@ function RegistrationForm() {
             return;
         }
 
+        const failedRules = validatePassword(password);
+        if (failedRules.length > 0) {
+            setPasswordErrors(failedRules);
+            setError('Password does not meet the requirements.');
+            setIsLoading(false);
+            return;
+        }
+
         try {
             const response = await apiClient.post('/register', {
                 email,
@@ -42,8 +59,6 @@ function RegistrationForm() {
                 password,
             });
 
-            console.log('Registration successful:', response.data);
-            alert('Registration successful!');
             navigate('/login');
         } catch (err) {
             console.error('Registration failed:', err);
@@ -123,11 +138,27 @@ function RegistrationForm() {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
+                    onBlur={handlePasswordBlur}
                     type="password"
                     className="w-full h-10 pl-2 pr-2 border border-gray-200 rounded-md shadow-sm outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-gray-800"
                     id="password_field"
                     required
                 />
+                <div className="p-4 mt-2 text-xs bg-gray-100 border border-gray-300 rounded-md">
+                    <p className="font-semibold text-gray-700">Password must:</p>
+                    <ul className="list-disc list-inside">
+                        {passwordRequirements.map((requirement, index) => (
+                            <li
+                                key={index}
+                                className={`${
+                                    hasPasswordBlurred && passwordErrors.includes(requirement) ? 'text-red-500' : 'text-gray-500'
+                                }`}
+                            >
+                                {requirement}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
 
             <div className="w-full flex flex-col gap-1">

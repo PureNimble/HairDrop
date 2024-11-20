@@ -17,7 +17,6 @@ function LoginForm() {
 
         try {
             await login(email, password);
-            alert('Login successful!');
             navigate('/home');
         } catch (err) {
             setError(err.message);

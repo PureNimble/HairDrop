@@ -6,6 +6,7 @@ use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 use serde::Deserialize;
 use crate::jwt::{create_jwt, verify_jwt};
+use crate::utils::passwordpolicy::validate_password;
 
 #[derive(Deserialize)]
 pub struct RegisterData {
@@ -26,6 +27,11 @@ pub async fn register_user(
     form: web::Json<RegisterData>,
 ) -> impl Responder {
     let mut conn = pool.get().expect("Failed to get DB connection");
+
+    let password_errors = validate_password(&form.password);
+    if !password_errors.is_empty() {
+        return HttpResponse::BadRequest().json(password_errors);
+    }
 
     // Hash the password
     let hashed_password = match hash(&form.password, 4) {

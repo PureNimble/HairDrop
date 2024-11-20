@@ -1,17 +1,22 @@
 extern crate diesel;
 
-mod config;
-mod handlers;
 mod jwt;
 mod models;
 mod schema;
+mod services;
 mod utils;
 
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
-use config::ServerConfig;
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::{self, ConnectionManager};
+
+use post_login::login_user;
+use post_register::register_user;
+use post_search::vulnerable_search;
+use post_searchsafe::secure_search;
+use services::{post_login, post_register, post_search, post_searchsafe};
+use utils::config::ServerConfig;
 
 type Pool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
@@ -44,10 +49,10 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors) // Attach CORS middleware
             .app_data(web::Data::new(pool.clone()))
-            .route("/register", web::post().to(handlers::register_user))
-            .route("/login", web::post().to(handlers::login_user))
-            .route("/search", web::post().to(handlers::vulnerable_search))
-            .route("/searchSafe", web::post().to(handlers::secure_search))
+            .route("/register", web::post().to(register_user))
+            .route("/login", web::post().to(login_user))
+            .route("/search", web::post().to(vulnerable_search))
+            .route("/searchSafe", web::post().to(secure_search))
     })
     .bind((
         server_config.host.as_str(),

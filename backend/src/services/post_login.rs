@@ -30,9 +30,9 @@ pub async fn login_user(
                 let token = create_jwt(&other_user.email);
                 HttpResponse::Ok().json(token)
             } else {
-                HttpResponse::Unauthorized().body("Invalid password")
+                HttpResponse::NotFound().body("Invalid Credentials")
             }
         }
-        Err(_) => HttpResponse::NotFound().body("User not found"),
+        Err(_) => HttpResponse::NotFound().body("Invalid Credentials")
     }
 }

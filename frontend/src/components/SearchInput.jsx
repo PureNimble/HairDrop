@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CiSearch } from "react-icons/ci";
 import { apiClient } from '../api/apiService';
 
-const SearchInput = ({ onResults, onError }) => {
+const SearchInput = ({ onResults, onSafeResults, onError, onSafeError }) => {
     const [query, setQuery] = useState('');
 
     const handleInputChange = (e) => {
@@ -12,14 +12,21 @@ const SearchInput = ({ onResults, onError }) => {
     const handleSearch = async () => {
         if (!query.trim()) return;
 
-
         try {
             const response = await apiClient.post('/search', query);
-
             if (onResults) onResults(response.data);
         } catch (err) {
-            console.error('Search failed:', err);
-            if (onError) onError('Failed to fetch search results. Please try again.');
+            if (onError) {
+                const errorMessage = err.response?.data || err.message || 'An unknown error occurred';
+                onError(`Failed to fetch search results: ${errorMessage}`);
+            }
+        }
+
+        try {
+            const safeResponse = await apiClient.post('/searchSafe', query);
+            if (onSafeResults) onSafeResults(safeResponse.data);
+        } catch (err) {
+            if (onSafeError) onSafeError('Failed to fetch search results. Please try again.');
         }
     };
 

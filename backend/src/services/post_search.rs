@@ -20,9 +20,9 @@ pub async fn vulnerable_search(
                 Ok(_claims) => {
                     let mut conn = match pool.get() {
                         Ok(conn) => conn,
-                        Err(_) => {
+                        Err(err) => {
                             return HttpResponse::InternalServerError()
-                                .body("Failed to get DB connection");
+                                .body(format!("Database connection error: {}", err));
                         }
                     };
 
@@ -31,12 +31,14 @@ pub async fn vulnerable_search(
                     let result = diesel::sql_query(sql).load::<User>(&mut conn);
                     return match result {
                         Ok(users) => HttpResponse::Ok().json(users),
-                        Err(_) => {
-                            HttpResponse::InternalServerError().body("Failed to perform search")
-                        }
+                        Err(err) => HttpResponse::InternalServerError()
+                            .body(format!("Database query failed: {}", err)),
                     };
                 }
-                Err(_) => return HttpResponse::Unauthorized().body("Invalid token"),
+                Err(err) => {
+                    return HttpResponse::Unauthorized()
+                        .body(format!("JWT verification failed: {}", err));
+                }
             }
         }
     }

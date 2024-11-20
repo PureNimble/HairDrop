@@ -45,7 +45,8 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .route("/register", web::post().to(handlers::register_user))
             .route("/login", web::post().to(handlers::login_user))
-            .route("/search",  web::post().to(handlers::vulnerable_search))
+            .route("/search", web::post().to(handlers::vulnerable_search))
+            .route("/searchSafe", web::post().to(handlers::secure_search))
     })
     .bind((
         server_config.host.as_str(),

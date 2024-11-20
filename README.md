@@ -24,8 +24,8 @@ This project is a service designed to seamlessly connect users with hair salons,
 
 - Serveless aws Lambda + DynamoDB running on rust
   
-  [<img src='https://icon.icepanel.io/AWS/svg/Database/DynamoDB.svg' alt='dynamoDB' height='40'>](https://aws.amazon.com/dynamodb/)
-  [<img src='https://icon.icepanel.io/AWS/svg/Compute/Lambda.svg' alt='lambda' height='40'>](https://aws.amazon.com/lambda/)
+  [<img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original-wordmark.svg' alt='mysql' height='40'>](https://www.mysql.com/)
+  [<img src='https://actix.rs/img/logo.png' alt='lambda' height='40'>](https://actix.rs/)
   [<img src='https://www.svgrepo.com/show/374056/rust.svg' alt='rust' height='40'>](https://www.rust-lang.org/)
 
 

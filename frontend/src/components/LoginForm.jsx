@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function LoginForm() {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ function LoginForm() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSignIn = async (e) => {
         e.preventDefault();
@@ -63,13 +65,20 @@ function LoginForm() {
                     placeholder="Password"
                     title="Input Password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full h-10 pl-2 pr-2 border border-gray-200 rounded-md shadow-sm outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-gray-800"
                     id="password_field"
                     required
                 />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-8 right-2 text-gray-500 hover:text-gray-700"
+                >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
             </div>
 
             {error && <p className="text-xs text-red-500">{error}</p>}

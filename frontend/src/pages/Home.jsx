@@ -22,6 +22,11 @@ function Home() {
             <div className="flex justify-end p-4">
                 <LogoutButton />
             </div>
+            <div id="title" className="flex justify-center">
+                <h1 className="text-4xl font-bold text-center text-gray-800">
+                    Injections Demo
+                </h1>
+            </div>
             <section className="container mx-auto px-12 py-8">
                 <div className="flex justify-center mt-16">
                     <div className="w-full max-w-4xl">
@@ -44,9 +49,14 @@ function Home() {
                                 {error && (
                                     <p className="text-red-500 flex justify-center">{error}</p>
                                 )}
-                                {!error && searchResults && (
-                                    <TableDB data={searchResults} />
-                                )}
+                                {!error &&
+                                    (searchResults.length > 0 ? (
+                                        <TableDB data={searchResults} />
+                                    ) : (
+                                        <p className="text-gray-500 text-center">
+                                            No data available
+                                        </p>
+                                    ))}
                             </>
                         )}
 

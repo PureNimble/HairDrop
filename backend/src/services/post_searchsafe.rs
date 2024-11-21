@@ -27,16 +27,18 @@ pub async fn secure_search(
                         }
                     };
 
-                    let search_term = body.trim().replace('"', "");
-
-                    // search all users with email like search_term, not using select
+                    let search_term = format!("%{}%", body.trim().replace('"', ""));
                     let result = user
                         .filter(email.like(&search_term))
                         .load::<User>(&mut conn);
 
                     return match result {
-                        Ok(users) => HttpResponse::Ok().json(users),
-                        Err(_) => {
+                        Ok(users) => {
+                            print!("Searched users: {:?}", users);
+                            HttpResponse::Ok().json(users)
+                        }
+                        Err(err) => {
+                            print!("Failed to perform search: {:?}", err);
                             HttpResponse::InternalServerError().body("Failed to perform search")
                         }
                     };

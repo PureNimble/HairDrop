@@ -1,5 +1,7 @@
+use dotenv::dotenv;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Serialize, Deserialize)]
@@ -8,7 +10,14 @@ pub struct Claims {
     exp: usize,  // Expiry time as UNIX timestamp
 }
 
-const SECRET_KEY: &[u8] = b"your_secret_key";
+// Load the environment variables from the .env file
+
+fn get_secret_key() -> Vec<u8> {
+    dotenv().ok();
+    env::var("JWT_SECRET")
+        .expect("JWT_SECRET must be set")
+        .into_bytes()
+}
 
 pub fn create_jwt(username: &str) -> String {
     let expiration = SystemTime::now()
@@ -25,7 +34,7 @@ pub fn create_jwt(username: &str) -> String {
     encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(SECRET_KEY),
+        &EncodingKey::from_secret(&get_secret_key()),
     )
     .expect("Failed to generate token")
 }
@@ -33,7 +42,7 @@ pub fn create_jwt(username: &str) -> String {
 pub fn verify_jwt(token: &str) -> Result<Claims, jsonwebtoken::errors::Error> {
     decode::<Claims>(
         token,
-        &DecodingKey::from_secret(SECRET_KEY),
+        &DecodingKey::from_secret(&get_secret_key()),
         &Validation::new(Algorithm::HS256),
     )
     .map(|data| data.claims)

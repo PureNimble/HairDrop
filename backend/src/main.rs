@@ -5,13 +5,12 @@ mod services;
 mod utils;
 
 use actix_cors::Cors;
-use actix_limitation::Limiter;
+use actix_ratelimit::{MemoryStore, MemoryStoreActor, RateLimiter};
 use actix_web::{web, App, HttpServer};
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::{self, ConnectionManager};
 use lazy_static::lazy_static;
 use std::sync::Arc;
-use std::time::Duration;
 use utils::config::ServerConfig;
 
 use post_login::login_user;
@@ -40,20 +39,23 @@ async fn main() -> std::io::Result<()> {
         SERVER_CONFIG.host, SERVER_CONFIG.port
     );
 
+    // Create a MemoryStore for rate limiting
+    let store = MemoryStore::new();
+    let rate_limiter = RateLimiter::new(MemoryStoreActor::from(store).start())
+        .with_interval(std::time::Duration::from_secs(60)) // 60-second window
+        .with_max_requests(20); // 100 requests per IP
+
     // Start the HTTP server
     HttpServer::new(move || {
         let cors = Cors::default()
-            .allowed_origin("https://hairdrop.me")
+            //.allowed_origin("https://example.com")
             .allow_any_method()
             .allow_any_header()
             .max_age(3600);
 
-        // Rate limit requests to 5 per minute per IP
-        let limiter = Limiter::new().limit_by_ip(5, Duration::from_secs(60));
-
         App::new()
             .wrap(cors) // Attach CORS middleware
-            .wrap(limiter) // Attach rate limiting middleware
+            .wrap(rate_limiter.clone()) // Attach rate limiter middleware
             .app_data(web::Data::new(pool.clone()))
             .route("/register", web::post().to(register_user))
             .route("/login", web::post().to(login_user))

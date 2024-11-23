@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/apiService';
 import { validatePassword, passwordRequirements } from '../utils/PasswordPolicy';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegistrationForm() {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ function RegistrationForm() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [hasPasswordBlurred, setHasPasswordBlurred] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -52,7 +54,7 @@ function RegistrationForm() {
         }
 
         try {
-            const response = await apiClient.post('/register', {
+            await apiClient.post('/register', {
                 email,
                 first_name,
                 last_name,
@@ -130,7 +132,7 @@ function RegistrationForm() {
                 />
             </div>
 
-            <div className="w-full flex flex-col gap-1">
+            <div className="w-full flex flex-col gap-1 relative">
                 <label className="text-xs font-semibold text-gray-500" htmlFor="password_field">Password</label>
                 <input
                     placeholder="Password"
@@ -139,11 +141,18 @@ function RegistrationForm() {
                     value={formData.password}
                     onChange={handleInputChange}
                     onBlur={handlePasswordBlur}
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     className="w-full h-10 pl-2 pr-2 border border-gray-200 rounded-md shadow-sm outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-gray-800"
                     id="password_field"
                     required
                 />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-8 right-2 text-gray-500 hover:text-gray-700"
+                >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
                 <div className="p-4 mt-2 text-xs bg-gray-100 border border-gray-300 rounded-md">
                     <p className="font-semibold text-gray-700">Password must:</p>
                     <ul className="list-disc list-inside">
@@ -161,7 +170,7 @@ function RegistrationForm() {
                 </div>
             </div>
 
-            <div className="w-full flex flex-col gap-1">
+            <div className="w-full flex flex-col gap-1 relative">
                 <label className="text-xs font-semibold text-gray-500" htmlFor="confirm_password_field">Confirm Password</label>
                 <input
                     placeholder="Confirm Password"

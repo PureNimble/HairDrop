@@ -10,21 +10,25 @@ use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::{self, ConnectionManager};
+use lazy_static::lazy_static;
+use std::sync::Arc;
+use utils::config::ServerConfig;
 
 use post_login::login_user;
 use post_register::register_user;
 use post_search::vulnerable_search;
 use post_searchsafe::secure_search;
 use services::{post_login, post_register, post_search, post_searchsafe};
-use utils::config::ServerConfig;
 
 type Pool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
+lazy_static! {
+    static ref SERVER_CONFIG: Arc<ServerConfig> = Arc::new(ServerConfig::from_env());
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // Load the server configuration from the environment
-    let server_config = ServerConfig::from_env();
-    let database_url = server_config.db_url;
+    let database_url = SERVER_CONFIG.db_url.clone();
 
     // Create a connection pool
     let manager = ConnectionManager::<MysqlConnection>::new(database_url);
@@ -33,7 +37,7 @@ async fn main() -> std::io::Result<()> {
         .expect("Failed to create pool.");
     println!(
         "Server started at http://{}:{}/",
-        server_config.host, server_config.port
+        SERVER_CONFIG.host, SERVER_CONFIG.port
     );
 
     // Start the HTTP server
@@ -54,10 +58,7 @@ async fn main() -> std::io::Result<()> {
             .route("/search", web::post().to(vulnerable_search))
             .route("/searchSafe", web::post().to(secure_search))
     })
-    .bind((
-        server_config.host.as_str(),
-        server_config.port.parse().expect("Invalid Number"),
-    ))?
+    .bind((SERVER_CONFIG.host.to_string(), SERVER_CONFIG.port))?
     .run()
     .await
 }

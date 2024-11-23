@@ -15,3 +15,4 @@ serde_json = "1.0"
 bcrypt = "0.12"                                                        # For password hashing
 uuid = { version = "1.1", features = ["v4"] }                          # For unique user IDs
 regex = "1.7.0"
+lazy_static = "1.4.0"

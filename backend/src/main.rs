@@ -41,7 +41,7 @@ async fn main() -> std::io::Result<()> {
     // Start the HTTP server
     HttpServer::new(move || {
         let cors = Cors::default()
-            //.allowed_origin("https://example.com")
+            .allowed_origin("https://hairdrop.me")
             .allow_any_method()
             .allow_any_header()
             .max_age(3600);

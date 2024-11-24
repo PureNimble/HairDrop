@@ -16,4 +16,3 @@ bcrypt = "0.12"                                                        # For pas
 uuid = { version = "1.1", features = ["v4"] }                          # For unique user IDs
 regex = "1.7.0"
 lazy_static = "1.4.0"
-actix-ratelimit = "0.4"
